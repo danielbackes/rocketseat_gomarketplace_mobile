@@ -1,9 +1,12 @@
 # GoMarketplace's Mobile Application
 
 React Native project proposal as a challenge by the instructor during the Rocketseat GoStack course to memorize the content.
-This is the GoMarketplace's Mobile Application to manage a chair store.
+This is the GoMarketplace's Mobile Application to manage a store.
 
-## What I learned or did in this project?
+## What I learned in this project?
+
+
+## What I did in this project?
 
 -
 
