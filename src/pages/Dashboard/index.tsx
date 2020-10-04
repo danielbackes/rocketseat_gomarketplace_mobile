@@ -48,8 +48,6 @@ const Dashboard: React.FC = () => {
 
   function handleAddToCart(item: Product): void {
     addToCart(item);
-
-    navigation.navigate('Cart');
   }
 
   return (

@@ -30,65 +30,59 @@ const CartProvider: React.FC = ({ children }) => {
 
   useEffect(() => {
     async function loadProducts(): Promise<void> {
-      const saveCart = await AsyncStorage.getItem('@GoMarketPlace:cart');
+      const storageProducts = await AsyncStorage.getItem(
+        '@GoMarketplace:products',
+      );
 
-      if (saveCart) {
-        setProducts(JSON.parse(saveCart));
+      if (storageProducts) {
+        setProducts([...JSON.parse(storageProducts)]);
       }
     }
 
     loadProducts();
   }, []);
 
-  useEffect(() => {
-    async function saveProducts(): Promise<void> {
-      await AsyncStorage.setItem(
-        '@GoMarketPlace:cart',
-        JSON.stringify(products),
-      );
-    }
-
-    saveProducts();
-  }, [products]);
+  async function saveProducts(): Promise<void> {
+    await AsyncStorage.setItem(
+      '@GoMarketplace:products',
+      JSON.stringify(products),
+    );
+  }
 
   const addToCart = useCallback(
     async product => {
-      const productExistent = products.find(
-        (productCart: Product) => product.id === productCart.id,
+      const productExists = products.find(
+        (cartProduct: Product) => product.id === cartProduct.id,
       );
 
-      if (productExistent) {
-        const otherProducts = products.filter(
-          (productCart: Product) => product.id !== productCart.id,
+      if (productExists) {
+        setProducts(
+          products.map((cartProduct: Product) =>
+            cartProduct.id === product.id
+              ? { ...cartProduct, quantity: cartProduct.quantity + 1 }
+              : cartProduct,
+          ),
         );
-
-        setProducts([
-          ...otherProducts,
-          { ...productExistent, quantity: productExistent.quantity + 1 },
-        ]);
       } else {
         setProducts([...products, { ...product, quantity: 1 }]);
       }
+
+      saveProducts();
     },
     [products],
   );
 
   const increment = useCallback(
     async id => {
-      const product = products.find(
-        (productCart: Product) => productCart.id === id,
+      setProducts(
+        products.map((cartProduct: Product) =>
+          cartProduct.id === id
+            ? { ...cartProduct, quantity: cartProduct.quantity + 1 }
+            : cartProduct,
+        ),
       );
 
-      if (product) {
-        const otherProducts = products.filter(
-          (productCart: Product) => productCart.id !== id,
-        );
-
-        setProducts([
-          ...otherProducts,
-          { ...product, quantity: product.quantity + 1 },
-        ]);
-      }
+      saveProducts();
     },
     [products],
   );
@@ -96,22 +90,28 @@ const CartProvider: React.FC = ({ children }) => {
   const decrement = useCallback(
     async id => {
       const product = products.find(
-        (productCart: Product) => productCart.id === id,
+        (cartProduct: Product) => cartProduct.id === id,
       );
 
       if (product) {
-        const otherProducts = products.filter(
-          (productCart: Product) => productCart.id !== id,
-        );
-
         if (product.quantity > 1) {
-          setProducts([
-            ...otherProducts,
-            { ...product, quantity: product.quantity - 1 },
-          ]);
+          setProducts(
+            products.map((cartProduct: Product) =>
+              cartProduct.id === id
+                ? {
+                    ...cartProduct,
+                    quantity: cartProduct.quantity - 1,
+                  }
+                : cartProduct,
+            ),
+          );
         } else {
-          setProducts([...otherProducts]);
+          setProducts(
+            products.filter((cartProduct: Product) => cartProduct.id !== id),
+          );
         }
+
+        saveProducts();
       }
     },
     [products],
