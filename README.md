@@ -5,11 +5,10 @@ This is the GoMarketplace's Mobile Application to manage a store.
 
 ## What I learned in this project?
 
-
-## What I did in this project?
-
--
+ - I learned how change a property of an object, that is storage in an array, using map function.
 
 ## See the screenshots
 
-<!-- ![Dashboard](readme/screenshot-1.png) -->
+![Dashboard](readme/screenshot-1.png)
+
+![Dashboard](readme/screenshot-2.png)
